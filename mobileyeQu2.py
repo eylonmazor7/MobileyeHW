@@ -78,8 +78,8 @@ def tryF(path1, path2, res):
 
 
 def main():
-    tryF('mobileyeHT/folder_A/file1.txt', 'mobileyeHT/folder_A/file2.txt', 'mobileyeHT/result1.txt')
-    tryF('mobileyeHT/folder_B/file1.txt', 'mobileyeHT/folder_B/file2.txt', 'mobileyeHT/result2.txt')
+    tryF('mobileyeHW/folder_A/file1.txt', 'mobileyeHW/folder_A/file2.txt', 'mobileyeHW/result1.txt')
+    tryF('mobileyeHW/folder_B/file1.txt', 'mobileyeHW/folder_B/file2.txt', 'mobileyeHW/result2.txt')
 
 
 if __name__ == "__main__":
