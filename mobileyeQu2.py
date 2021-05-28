@@ -1,85 +1,88 @@
-def exportResultFile(flag1, f1, f2, file1Dict, file2Dict, resultFile):
-    resultFile.write("First file unique details:\n\n")
+class checkFiles:
+    def __init__(self, f1, f2, res):
+        self.file1Dict = {}
+        self.file2Dict = {}
+        self.f1 = open(f1)
+        self.f2 = open(f2)
+        self.resultFile = open(res, "w")
+        # ignore first lines
+        self.f1.readline()
+        self.f2.readline()
+        self.scanFiles()
 
-    for i in file1Dict.keys():
-        resultFile.write(i)
+    def scanFiles(self):
+        flag1 = flag2 = True
 
-    if flag1:
-        copyTheRest(f1, resultFile)
+        while flag1 and flag2:
+            if not self.readLines(self.f1, self.file1Dict):
+                flag1 = False
+            if not self.readLines(self.f2, self.file2Dict):
+                flag2 = False
+            self.processData()
 
-    resultFile.write("\n\nSecond file unique details:\n\n")
+        self.exportResultFile(flag1, flag2)
+        self.f1.close()
+        self.f2.close()
+        self.resultFile.close()
 
-    for i in file2Dict.keys():
-        resultFile.write(i)
-
-    if not flag1:
-        copyTheRest(f2, resultFile)
-
-
-def copyTheRest(f, resultFile):
-    # copy until the end
-    try:
-        while True:
-            for i in range(1000):
+    def readLines(self, f, fileDict):
+        try:
+            for x in range(5000):
                 li = next(f)
-                resultFile.write(li)
-    except StopIteration:
-        return
+                fileDict[li] = x
+        except StopIteration:
+            if li in fileDict:
+                fileDict.pop(li)  # ignore last row
+            return False
+        return True
 
+    # run all over the smaller dict and search o(1) in the bigger dict
+    def processData(self):
+        valueToDel = []
+        if len(self.file1Dict) < len(self.file2Dict):
+            for i in self.file1Dict.keys():
+                if i in self.file2Dict:
+                    valueToDel.append(i)
+        else:
+            for i in self.file2Dict.keys():
+                if i not in self.file1Dict:
+                    valueToDel.append(i)
 
-def readLines(f, fileDict):
-    try:
-        for x in range(5000):
-            li = next(f)
-            fileDict[li] = x
-    except StopIteration:
-        if li in fileDict:
-            fileDict.pop(li)  # ignore last row
-        return False
-    return True
+        for i in valueToDel:
+            self.file1Dict.pop(i)
+            self.file2Dict.pop(i)
 
+    def exportResultFile(self, flag1, flag2):
+        self.resultFile.write("First file unique details:\n\n")
 
-# run all over the smaller dict and search o(1) in the bigger dict
-def processData(file1Dict, file2Dict):
-    valueToDel = []
-    if len(file1Dict) < len(file2Dict):
-        for i in file1Dict.keys():
-            if i in file2Dict:
-                valueToDel.append(i)
-    else:
-        for i in file2Dict.keys():
-            if i not in file1Dict:
-                valueToDel.append(i)
+        for i in self.file1Dict.keys():
+            self.resultFile.write(i)
 
-    for i in valueToDel:  # del the duplicate rows
-        file1Dict.pop(i)
-        file2Dict.pop(i)
+        if flag1 and not flag2:
+            self.copyTheRest(self.f1)
 
+        self.resultFile.write("\n\nSecond file unique details:\n\n")
 
-def tryF(path1, path2, res):
-    file1Dict, file2Dict = {}, {}
-    f1 = open(path1)
-    f2 = open(path2)
-    resultFile = open(res, "w")
+        for i in self.file2Dict.keys():
+            self.resultFile.write(i)
 
-    f1.readline()  # ignore first lines
-    f2.readline()  # ignore first lines
+        if flag2 and not flag1:
+            self.copyTheRest(self.f2)
 
-    flag1 = flag2 = True
-    while flag1 and flag2:
-        if not readLines(f1, file1Dict): flag1 = False
-        if not readLines(f2, file2Dict): flag2 = False
-        processData(file1Dict, file2Dict)
-
-    exportResultFile(flag1, f1, f2, file1Dict, file2Dict, resultFile)
-    f1.close()
-    f2.close()
-    resultFile.close()
+    def copyTheRest(self, f):
+        # copy until the end
+        try:
+            while True:
+                for i in range(1000):
+                    li = next(f)
+                    self.resultFile.write(li)
+        except StopIteration:
+            return
 
 
 def main():
-    tryF('mobileyeHW/folder_A/file1.txt', 'mobileyeHW/folder_A/file2.txt', 'mobileyeHW/result1.txt')
-    tryF('mobileyeHW/folder_B/file1.txt', 'mobileyeHW/folder_B/file2.txt', 'mobileyeHW/result2.txt')
+    checkFiles('mobileyeHW/folder_A/file1.txt', 'mobileyeHW/folder_A/file2.txt', 'mobileyeHW/result1.txt')
+    checkFiles('mobileyeHW/folder_B/file1.txt', 'mobileyeHW/folder_B/file2.txt', 'mobileyeHW/result2.txt')
 
 
 if __name__ == "__main__":
