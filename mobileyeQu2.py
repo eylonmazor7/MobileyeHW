@@ -53,7 +53,13 @@ class checkFiles:
             self.file2Dict.pop(i)
 
     def exportResultFile(self, flag1, flag2):
-        self.resultFile.write("First file unique details:\n\n")
+        if len(self.file1Dict) == 0 and len(self.file2Dict) == 0:
+            print("The files are identical")
+            self.resultFile.write("The files are identical")
+            return
+
+        print("The files are not identical")
+        self.resultFile.write("First file unique lines:\n\n")
 
         for i in self.file1Dict.keys():
             self.resultFile.write(i)
@@ -61,7 +67,7 @@ class checkFiles:
         if flag1 and not flag2:
             self.copyTheRest(self.f1)
 
-        self.resultFile.write("\n\nSecond file unique details:\n\n")
+        self.resultFile.write("\n\nSecond file unique lines:\n\n")
 
         for i in self.file2Dict.keys():
             self.resultFile.write(i)
