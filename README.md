@@ -9,4 +9,4 @@ email: eylonmazor7@gmail.com
 please, download mainEylonMazor.py file - and run.
 the result will appear in resuls files.
 
-dependency (for GUI): pyqt5 library.
+Dependency (for GUI): PyQt5 library.
